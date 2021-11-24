@@ -21,7 +21,7 @@ Figures presented in the manuscript and supplementary information
 | ------| ----------- | ------      | --------- |
 | 2     | Effect of cooling / optogenetics on vowel discrimination in noise | [.py](./Vowels_Cooling/vin_cooling_by_ferret.py) | [.png](./Vowels_Cooling/images/Vowels_in_Noise_Cooling.png)|
 | 3B-E  | Effect of cooling on spatial release from masking | [.py](./Vowels_Unmasking/plot_unmasking_data.py/)  | [/dir](./Vowels_Unmasking/images)|
-| 4B-C  | Effects of cooling on sound localization          | [.py](./Localization/localization_analysis.py)     | [.png](./Localization/.pngs/localization.png)|
+| 4B-C  | Effects of cooling on sound localization          | [.py](./Localization/localization_analysis.py)     | [.png](./Localization/images/localization.png)|
 | S1    | Temperature distributions                         | [.py](./Supplementary/plot_cortical_temperature_dist.py)  | [.png](./Supplementary/images/Temperature_Distributions.png)|
 | S2    | Spatial release from masking in additional animals | [.py](./Localization/lateralization_supplementary.py)     | [.png](https://github.com/stephentown42/cooling_auditory_cortex/blob/main/Results/Vowels_Unmasking/images/F1201_control.png)|
 | S3    | Effect of cooling on sound lateralization         | [.py](./Localization/lateralization_supplementary.py)     | [.png](./Localization/images/lateralization.png)|
