@@ -1,0 +1,133 @@
+[1] "Analysis run at:"
+[1] "2021-10-08 13:10:33 BST"
+[1] "########################################################"
+[1] "########################################################"
+[1] "Bilateral vs. Control"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: Correct ~ 1 + Condition + (1 | fNum)
+   Data: bc
+
+     AIC      BIC   logLik deviance df.resid 
+  4563.1   4581.4  -2278.5   4557.1     3316 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.1419 -0.9814  0.8757  0.8757  1.3575 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.02527  0.159   
+Number of obs: 3319, groups:  fNum, 2
+
+Fixed effects:
+                 Estimate Std. Error z value Pr(>|z|)    
+(Intercept)       -0.4597     0.1521  -3.023  0.00251 ** 
+ConditionControl   0.5737     0.1083   5.297 1.18e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr)
+CondtnCntrl -0.632
+[1] "########################################################"
+[1] "########################################################"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: poisson  ( log )
+Formula: Error ~ 1 + Condition + (1 | fNum)
+   Data: bc
+
+     AIC      BIC   logLik deviance df.resid 
+136244.2 136262.6 -68119.1 136238.2     3316 
+
+Scaled residuals: 
+   Min     1Q Median     3Q    Max 
+-5.953 -4.309 -4.309  2.652 37.460 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.01317  0.1148  
+Number of obs: 3319, groups:  fNum, 2
+
+Fixed effects:
+                  Estimate Std. Error z value Pr(>|z|)    
+(Intercept)       3.453188   0.081740   42.25   <2e-16 ***
+ConditionControl -0.416959   0.009941  -41.94   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr)
+CondtnCntrl -0.102
+[1] "########################################################"
+[1] "########################################################"
+[1] "########################################################"
+[1] "Unilateral cooling: Left vs. Right"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: Correct ~ 1 + Condition * Spkr_Rad + (1 | fNum)
+   Data: lr
+
+     AIC      BIC   logLik deviance df.resid 
+  1846.7   1872.9   -918.4   1836.7     1398 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.6035 -0.9357 -0.5460  0.9800  2.6312 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.1394   0.3733  
+Number of obs: 1403, groups:  fNum, 2
+
+Fixed effects:
+                        Estimate Std. Error z value Pr(>|z|)    
+(Intercept)             -0.49603    0.28279  -1.754   0.0794 .  
+ConditionRight           0.17319    0.11704   1.480   0.1389    
+Spkr_Rad                -0.68583    0.08944  -7.668 1.75e-14 ***
+ConditionRight:Spkr_Rad  0.71738    0.11109   6.458 1.06e-10 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) CndtnR Spkr_R
+ConditnRght -0.279              
+Spkr_Rad     0.033 -0.071       
+CndtnRg:S_R -0.029  0.058 -0.806
+[1] "########################################################"
+[1] "########################################################"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: poisson  ( log )
+Formula: Error ~ 1 + Condition * Spkr_Rad + (1 | fNum)
+   Data: lr
+
+     AIC      BIC   logLik deviance df.resid 
+ 55174.2  55200.4 -27582.1  55164.2     1398 
+
+Scaled residuals: 
+   Min     1Q Median     3Q    Max 
+-8.196 -4.526 -0.945  2.906 33.978 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.1005   0.3169  
+Number of obs: 1403, groups:  fNum, 2
+
+Fixed effects:
+                         Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              3.336623   0.224296  14.876   <2e-16 ***
+ConditionRight          -0.016202   0.011505  -1.408    0.159    
+Spkr_Rad                 0.352543   0.008215  42.917   <2e-16 ***
+ConditionRight:Spkr_Rad -0.595034   0.010301 -57.765   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) CndtnR Spkr_R
+ConditnRght -0.033              
+Spkr_Rad    -0.014  0.277       
+CndtnRg:S_R  0.011 -0.131 -0.797

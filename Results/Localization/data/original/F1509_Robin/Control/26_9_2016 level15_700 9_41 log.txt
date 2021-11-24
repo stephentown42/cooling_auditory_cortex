@@ -1,0 +1,4 @@
+Trial	CorrectionTrial?	StartTime	CenterReward?	SpkrIdx	SpkrPos	duration	HoldTime	Atten	Response	RespTime	Correct	ComputerTime	SoundOrLED	
+1	0	59.301	0	4	-30	700	1021	4.5	4	58.280	1	736599.404704	0	
+2	0	612.487	1	5	0	700	1041	0.0	4	614.874	0	736599.411134	0	
+3	1	621.615	0	5	0	700	1041	0.0	-1	-1.000	0	736599.411385	0	

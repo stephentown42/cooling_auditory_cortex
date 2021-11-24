@@ -1,0 +1,2 @@
+Trial	CorrectionTrial?	StartTime	CenterReward?	F1	F2	F3	F4	HoldTime	Atten	Pitch	Side	Response	RespTime	Correct	SpatialMask	Mask	
+1	0	70.4577	1	730	2058	2857	4205	502	2.5	200	1	0	78.2158	0	1	

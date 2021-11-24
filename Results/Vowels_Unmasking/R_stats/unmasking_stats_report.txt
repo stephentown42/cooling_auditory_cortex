@@ -1,0 +1,274 @@
+[1] "Analysis run at:"
+[1] "2021-11-02 19:31:44 GMT"
+[1] "########################################################"
+[1] "########################################################"
+[1] "########################################################"
+[1] "Bilateral cooling: Colocated vs Separated * Cooled vs. Control"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: Correct ~ treatment * SpatialCondition * VowelLocation + (1 |  
+    fNum)
+   Data: df
+
+     AIC      BIC   logLik deviance df.resid 
+  3378.4   3431.6  -1680.2   3360.4     2740 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.7086 -1.3542  0.6065  0.6521  1.0031 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.02618  0.1618  
+Number of obs: 2749, groups:  fNum, 2
+
+Fixed effects:
+                                                           Estimate Std. Error
+(Intercept)                                                  0.7584     0.1509
+treatmentTrue                                               -0.6126     0.1867
+SpatialConditionseparated                                    0.1620     0.1381
+VowelLocationright                                           0.0181     0.1351
+treatmentTrue:SpatialConditionseparated                      0.3963     0.2659
+treatmentTrue:VowelLocationright                             0.5081     0.2617
+SpatialConditionseparated:VowelLocationright                -0.0895     0.1943
+treatmentTrue:SpatialConditionseparated:VowelLocationright  -0.2806     0.3773
+                                                           z value Pr(>|z|)    
+(Intercept)                                                  5.026 5.02e-07 ***
+treatmentTrue                                               -3.282  0.00103 ** 
+SpatialConditionseparated                                    1.173  0.24082    
+VowelLocationright                                           0.134  0.89344    
+treatmentTrue:SpatialConditionseparated                      1.490  0.13619    
+treatmentTrue:VowelLocationright                             1.942  0.05217 .  
+SpatialConditionseparated:VowelLocationright                -0.461  0.64506    
+treatmentTrue:SpatialConditionseparated:VowelLocationright  -0.744  0.45702    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) trtmnT SptlCn VwlLct trT:SC trT:VL SpC:VL
+treatmentTr -0.353                                          
+SptlCndtnsp -0.440  0.355                                   
+VwlLctnrght -0.450  0.364  0.492                            
+trtmntTr:SC  0.228 -0.676 -0.519 -0.255                     
+trtmntTr:VL  0.230 -0.686 -0.254 -0.516  0.484              
+SptlCndt:VL  0.313 -0.253 -0.711 -0.695  0.369  0.359       
+trtmT:SC:VL -0.159  0.475  0.366  0.358 -0.705 -0.693 -0.515
+[1] "########################################################"
+[1] "########################################################"
+[1] "########################################################"
+[1] "Bilateral cooling: Colocated vs Single Speaker * Cooled vs. Control"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: Correct ~ treatment * SpatialCondition * VowelLocation + (1 |  
+    fNum)
+   Data: lose_mask
+
+     AIC      BIC   logLik deviance df.resid 
+  3231.7   3285.2  -1606.9   3213.7     2797 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.0903 -1.1184  0.5258  0.6389  0.9811 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.01152  0.1073  
+Number of obs: 2806, groups:  fNum, 2
+
+Fixed effects:
+                                                                Estimate
+(Intercept)                                                      0.78547
+treatmentTrue                                                   -0.65402
+SpatialConditionsingle_speaker                                   0.56787
+VowelLocationright                                               0.01821
+treatmentTrue:SpatialConditionsingle_speaker                     0.68290
+treatmentTrue:VowelLocationright                                 0.50312
+SpatialConditionsingle_speaker:VowelLocationright               -0.17834
+treatmentTrue:SpatialConditionsingle_speaker:VowelLocationright -0.64547
+                                                                Std. Error
+(Intercept)                                                        0.12475
+treatmentTrue                                                      0.18716
+SpatialConditionsingle_speaker                                     0.14443
+VowelLocationright                                                 0.13501
+treatmentTrue:SpatialConditionsingle_speaker                       0.28161
+treatmentTrue:VowelLocationright                                   0.26141
+SpatialConditionsingle_speaker:VowelLocationright                  0.20195
+treatmentTrue:SpatialConditionsingle_speaker:VowelLocationright    0.39289
+                                                                z value
+(Intercept)                                                       6.296
+treatmentTrue                                                    -3.494
+SpatialConditionsingle_speaker                                    3.932
+VowelLocationright                                                0.135
+treatmentTrue:SpatialConditionsingle_speaker                      2.425
+treatmentTrue:VowelLocationright                                  1.925
+SpatialConditionsingle_speaker:VowelLocationright                -0.883
+treatmentTrue:SpatialConditionsingle_speaker:VowelLocationright  -1.643
+                                                                Pr(>|z|)    
+(Intercept)                                                     3.05e-10 ***
+treatmentTrue                                                   0.000475 ***
+SpatialConditionsingle_speaker                                  8.43e-05 ***
+VowelLocationright                                              0.892691    
+treatmentTrue:SpatialConditionsingle_speaker                    0.015309 *  
+treatmentTrue:VowelLocationright                                0.054269 .  
+SpatialConditionsingle_speaker:VowelLocationright               0.377208    
+treatmentTrue:SpatialConditionsingle_speaker:VowelLocationright 0.100409    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) trtmnT SptlC_ VwlLct trT:SC_ trT:VL SC_:VL
+treatmentTr -0.434                                           
+SptlCndtns_ -0.513  0.344                                    
+VwlLctnrght -0.544  0.363  0.470                             
+trtmntT:SC_  0.262 -0.638 -0.513 -0.241                      
+trtmntTr:VL  0.278 -0.683 -0.243 -0.517  0.456               
+SptlCnd_:VL  0.365 -0.244 -0.715 -0.669  0.367   0.346       
+trtT:SC_:VL -0.186  0.456  0.368  0.344 -0.717  -0.666 -0.514
+[1] "########################################################"
+[1] "########################################################"
+[1] "########################################################"
+[1] "Control data: Colocated vs Separated"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: Correct ~ SpatialCondition * VowelLocation + (1 | fNum)
+   Data: control_data
+
+     AIC      BIC   logLik deviance df.resid 
+  2494.4   2522.6  -1242.2   2484.4     2068 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.7215 -1.3387  0.6021  0.6298  0.7538 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.03729  0.1931  
+Number of obs: 2073, groups:  fNum, 2
+
+Fixed effects:
+                                             Estimate Std. Error z value
+(Intercept)                                   0.74586    0.16891   4.416
+SpatialConditionseparated                     0.16154    0.13825   1.168
+VowelLocationright                            0.01809    0.13526   0.134
+SpatialConditionseparated:VowelLocationright -0.08970    0.19449  -0.461
+                                             Pr(>|z|)    
+(Intercept)                                  1.01e-05 ***
+SpatialConditionseparated                       0.243    
+VowelLocationright                              0.894    
+SpatialConditionseparated:VowelLocationright    0.645    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) SptlCn VwlLct
+SptlCndtnsp -0.393              
+VwlLctnrght -0.403  0.492       
+SptlCndt:VL  0.280 -0.711 -0.695
+[1] "########################################################"
+[1] "########################################################"
+[1] "########################################################"
+[1] "Cooled data: Colocated vs Separated"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: Correct ~ SpatialCondition * VowelLocation + (1 | fNum)
+   Data: cooled_data
+
+     AIC      BIC   logLik deviance df.resid 
+   886.0    908.6   -438.0    876.0      671 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.5110 -1.1337  0.6618  0.7319  0.9469 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0        0       
+Number of obs: 676, groups:  fNum, 2
+
+Fixed effects:
+                                             Estimate Std. Error z value
+(Intercept)                                    0.1092     0.1559   0.700
+SpatialConditionseparated                      0.5568     0.2266   2.457
+VowelLocationright                             0.5150     0.2234   2.305
+SpatialConditionseparated:VowelLocationright  -0.3555     0.3226  -1.102
+                                             Pr(>|z|)  
+(Intercept)                                    0.4837  
+SpatialConditionseparated                      0.0140 *
+VowelLocationright                             0.0212 *
+SpatialConditionseparated:VowelLocationright   0.2705  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) SptlCn VwlLct
+SptlCndtnsp -0.688              
+VwlLctnrght -0.698  0.480       
+SptlCndt:VL  0.483 -0.702 -0.693
+optimizer (Nelder_Mead) convergence code: 0 (OK)
+boundary (singular) fit: see ?isSingular
+
+[1] "Colocated data: Control vs Cooled"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: Correct ~ treatment + (1 | fNum)
+   Data: coloc_data
+
+     AIC      BIC   logLik deviance df.resid 
+  1737.3   1753.0   -865.6   1731.3     1378 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.5782 -1.3131  0.6337  0.7289  0.8761 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.02514  0.1586  
+Number of obs: 1381, groups:  fNum, 2
+
+Fixed effects:
+              Estimate Std. Error z value Pr(>|z|)    
+(Intercept)     0.7731     0.1349   5.730    1e-08 ***
+treatmentTrue  -0.3677     0.1405  -2.616  0.00888 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr)
+treatmentTr -0.332
+[1] "########################################################"
+[1] "########################################################"
+[1] "########################################################"
+[1] "Separated data: Control vs Cooled"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: Correct ~ treatment + (1 | fNum)
+   Data: sep_data
+
+     AIC      BIC   logLik deviance df.resid 
+  1644.6   1660.3   -819.3   1638.6     1365 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.6585 -1.3949  0.6030  0.6452  0.7169 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.01629  0.1276  
+Number of obs: 1368, groups:  fNum, 2
+
+Fixed effects:
+              Estimate Std. Error z value Pr(>|z|)    
+(Intercept)     0.9071     0.1203   7.539 4.72e-14 ***
+treatmentTrue  -0.1355     0.1476  -0.918    0.359    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr)
+treatmentTr -0.399

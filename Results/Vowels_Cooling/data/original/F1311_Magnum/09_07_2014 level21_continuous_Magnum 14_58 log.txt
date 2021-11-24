@@ -1,0 +1,1 @@
+Trial	CorrectionTrial?	StartTime	CenterReward?	F1	F2	F3	F4	HoldTime	Atten	Pitch	Side	Response	RespTime	Correct	

@@ -1,0 +1,46 @@
+[1] "Analysis run at:"
+[1] "2021-11-02 16:03:10 GMT"
+[1] "########################################################"
+[1] "########################################################"
+[1] "########################################################"
+[1] "Bilateral cooling"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: Correct ~ treatment * Mask * SNR + (1 | fNum)
+   Data: df
+
+     AIC      BIC   logLik deviance df.resid 
+  3348.6   3402.5  -1665.3   3330.6     2938 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.5339 -1.0950  0.5165  0.6490  1.0379 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.06363  0.2522  
+Number of obs: 2947, groups:  fNum, 3
+
+Fixed effects:
+                                  Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                       1.589004   0.206026   7.713 1.23e-14 ***
+treatmentTrue                     0.225479   0.224737   1.003  0.31572    
+MaskRestricted                   -0.325391   0.143968  -2.260  0.02381 *  
+SNR                              -0.007389   0.013289  -0.556  0.57820    
+treatmentTrue:MaskRestricted     -0.768792   0.266562  -2.884  0.00393 ** 
+treatmentTrue:SNR                 0.020474   0.018263   1.121  0.26227    
+MaskRestricted:SNR                0.040362   0.015879   2.542  0.01102 *  
+treatmentTrue:MaskRestricted:SNR -0.022100   0.023990  -0.921  0.35693    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) trtmnT MskRst SNR    trT:MR tT:SNR MR:SNR
+treatmentTr -0.278                                          
+MaskRstrctd -0.445  0.393                                   
+SNR          0.486 -0.272 -0.428                            
+trtmntTr:MR  0.215 -0.843 -0.537  0.219                     
+trtmntT:SNR -0.210  0.692  0.305 -0.541 -0.584              
+MskRstr:SNR -0.234  0.225  0.613 -0.663 -0.341  0.455       
+trtT:MR:SNR  0.156 -0.527 -0.409  0.410  0.679 -0.761 -0.640

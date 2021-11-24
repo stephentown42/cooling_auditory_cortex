@@ -1,0 +1,68 @@
+[1] "Analysis run at:"
+[1] "2021-10-08 13:12:24 BST"
+[1] "Bilateral vs. Control"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: LatCorrect ~ 1 + Condition + (1 | fNum)
+   Data: bc
+
+     AIC      BIC   logLik deviance df.resid 
+  2875.7   2894.0  -1434.9   2869.7     3316 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-3.2485  0.3078  0.3078  0.5151  0.5785 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.2724   0.5219  
+Number of obs: 3319, groups:  fNum, 2
+
+Fixed effects:
+                 Estimate Std. Error z value Pr(>|z|)    
+(Intercept)        1.6115     0.3907   4.125 3.71e-05 ***
+ConditionControl   0.2323     0.1336   1.739   0.0821 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr)
+CondtnCntrl -0.296
+[1] "########################################################"
+[1] "Unilateral cooling: Left vs. Right"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: LatCorrect ~ 1 + Condition * Spkr_Rad + (1 | fNum)
+   Data: lr
+
+     AIC      BIC   logLik deviance df.resid 
+  1463.2   1489.5   -726.6   1453.2     1398 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.5761  0.3882  0.4709  0.5804  0.6928 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0        0       
+Number of obs: 1403, groups:  fNum, 2
+
+Fixed effects:
+                        Estimate Std. Error z value Pr(>|z|)    
+(Intercept)              1.26874    0.10168  12.478  < 2e-16 ***
+ConditionRight           0.04453    0.13388   0.333   0.7395    
+Spkr_Rad                -0.20261    0.09670  -2.095   0.0362 *  
+ConditionRight:Spkr_Rad  0.57138    0.12597   4.536 5.74e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) CndtnR Spkr_R
+ConditnRght -0.759              
+Spkr_Rad    -0.118  0.090       
+CndtnRg:S_R  0.091  0.022 -0.768
+optimizer (Nelder_Mead) convergence code: 0 (OK)
+boundary (singular) fit: see ?isSingular
+

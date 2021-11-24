@@ -1,0 +1,111 @@
+[1] "Analysis run at:"
+[1] "2021-11-02 19:41:23 GMT"
+[1] "########################################################"
+[1] "########################################################"
+[1] "########################################################"
+[1] "Control data: Colocated vs Separated"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: Correct ~ SpatialCondition * VowelLocation * Atten + (1 | fNum)
+   Data: srm
+
+     AIC      BIC   logLik deviance df.resid 
+ 12110.0  12174.4  -6046.0  12092.0     9480 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.8066 -1.2434  0.6391  0.7301  1.0189 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.02578  0.1606  
+Number of obs: 9489, groups:  fNum, 6
+
+Fixed effects:
+                                                     Estimate Std. Error
+(Intercept)                                         0.4906438  0.0824516
+SpatialConditionseparated                           0.0901178  0.0681230
+VowelLocationright                                 -0.0895517  0.0675932
+Atten                                              -0.0299094  0.0051317
+SpatialConditionseparated:VowelLocationright        0.0602352  0.0965065
+SpatialConditionseparated:Atten                     0.0002999  0.0066121
+VowelLocationright:Atten                           -0.0013417  0.0065603
+SpatialConditionseparated:VowelLocationright:Atten  0.0023463  0.0093510
+                                                   z value Pr(>|z|)    
+(Intercept)                                          5.951 2.67e-09 ***
+SpatialConditionseparated                            1.323    0.186    
+VowelLocationright                                  -1.325    0.185    
+Atten                                               -5.828 5.60e-09 ***
+SpatialConditionseparated:VowelLocationright         0.624    0.533    
+SpatialConditionseparated:Atten                      0.045    0.964    
+VowelLocationright:Atten                            -0.205    0.838    
+SpatialConditionseparated:VowelLocationright:Atten   0.251    0.802    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) SptlCn VwlLct Atten  SpC:VL SptC:A VwlL:A
+SptlCndtnsp -0.407                                          
+VwlLctnrght -0.410  0.497                                   
+Atten        0.277 -0.269 -0.271                            
+SptlCndt:VL  0.288 -0.706 -0.700  0.190                     
+SptlCndtn:A -0.172  0.422  0.210 -0.637 -0.298              
+VwlLctnrg:A -0.173  0.210  0.431 -0.642 -0.302  0.499       
+SptlCn:VL:A  0.121 -0.299 -0.303  0.450  0.431 -0.707 -0.702
+[1] "########################################################"
+[1] "########################################################"
+[1] "########################################################"
+[1] "Control data: Colocated vs Clean"
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: binomial  ( logit )
+Formula: Correct ~ SpatialCondition * VowelLocation * Atten + (1 | fNum)
+   Data: lose_mask
+
+     AIC      BIC   logLik deviance df.resid 
+ 10673.2  10737.3  -5327.6  10655.2     9168 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.2021 -1.1254  0.5196  0.6613  1.0253 
+
+Random effects:
+ Groups Name        Variance Std.Dev.
+ fNum   (Intercept) 0.02623  0.162   
+Number of obs: 9177, groups:  fNum, 6
+
+Fixed effects:
+                                                         Estimate Std. Error
+(Intercept)                                              0.463410   0.083177
+SpatialConditionsingle_speaker                           0.809676   0.075016
+VowelLocationright                                      -0.089349   0.067572
+Atten                                                   -0.033720   0.005303
+SpatialConditionsingle_speaker:VowelLocationright        0.067068   0.105752
+SpatialConditionsingle_speaker:Atten                     0.016043   0.007229
+VowelLocationright:Atten                                -0.001358   0.006562
+SpatialConditionsingle_speaker:VowelLocationright:Atten  0.003132   0.010187
+                                                        z value Pr(>|z|)    
+(Intercept)                                               5.571 2.53e-08 ***
+SpatialConditionsingle_speaker                           10.793  < 2e-16 ***
+VowelLocationright                                       -1.322   0.1861    
+Atten                                                    -6.358 2.04e-10 ***
+SpatialConditionsingle_speaker:VowelLocationright         0.634   0.5259    
+SpatialConditionsingle_speaker:Atten                      2.219   0.0265 *  
+VowelLocationright:Atten                                 -0.207   0.8360    
+SpatialConditionsingle_speaker:VowelLocationright:Atten   0.307   0.7585    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) SptlC_ VwlLct Atten  SpC_:VL SpC_:A VwlL:A
+SptlCndtns_ -0.372                                           
+VwlLctnrght -0.407  0.451                                    
+Atten        0.286 -0.250 -0.262                             
+SptlCnd_:VL  0.260 -0.709 -0.639  0.168                      
+SptlCndt_:A -0.156  0.414  0.192 -0.565 -0.293               
+VwlLctnrg:A -0.171  0.191  0.431 -0.621 -0.276   0.457       
+SptlC_:VL:A  0.110 -0.293 -0.278  0.400  0.419  -0.709 -0.644
+[1] "########################################################"
+[1] "########################################################"
+[1] "########################################################"
