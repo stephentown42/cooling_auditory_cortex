@@ -21,6 +21,6 @@ Figures presented in the manuscript and supplementary information
 | 3B-E  | Effect of cooling on spatial release from masking | [.py](./Vowels_Unmasking/plot_unmasking_data.py/)  | [/dir](./Vowels_Unmasking/images)|
 | 4B-C  | Effects of cooling on sound localization          | [.py](./Localization/localization_analysis.py)     | [.png](./Localization/images/localization.png)|
 | S1    | Temperature distributions                         | [.py](./Supplementary/plot_cortical_temperature_dist.py)  | [.png](./Supplementary/images/Temperature_Distributions.png)|
-| S2    | Spatial release from masking in additional animals | [.py](./Localization/lateralization_supplementary.py)     | [.png](https://github.com/stephentown42/cooling_auditory_cortex/blob/main/Results/Vowels_Unmasking/images/F1201_control.png)|
+| S2    | Spatial release from masking in additional animals | [.py](./Localization/lateralization_supplementary.py)     | [/dir](./Vowels_Unmasking/images)|
 | S3    | Effect of cooling on sound lateralization         | [.py](./Localization/lateralization_supplementary.py)     | [.png](./Localization/images/lateralization.png)|
 | S4    | Performance vs trial         | [.py](./Supplementary/learning_during_cooling.py)     | [F1311](./Supplementary/images/Performance_vs_trial_F1311.png), [F1509](./Supplementary/images/Performance_vs_trial_F1509.png)|
