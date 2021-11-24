@@ -15,7 +15,7 @@ Matlab utilities holds [legacy code](./matlab_utils) previously used to cross-re
 
 ## Figure references:
 
-Figures presented in the manu.py and supplementary information
+Figures presented in the manuscript and supplementary information
 
 | Figure | Title       | Code        | Image     |
 | ------| ----------- | ------      | --------- |
