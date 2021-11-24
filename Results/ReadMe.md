@@ -19,7 +19,7 @@ Figures presented in the manuscript and supplementary information
 
 | Figure | Title       | Code        | Image     |
 | ------| ----------- | ------      | --------- |
-| 2     | Effect of cooling / optogenetics on vowel discrimination in noise | [.py](./Vowels_Cooling/vin_cooling_by_ferret.py) | [.png](./Vowels_Cooling/images/Vowels_in_Noise_Cooling.png)|
+| 2     | Effect of cooling / optogenetics on vowel discrimination in noise | [.py](./Vowels_Cooling/vin_cooling_by_ferret.py) | [F1311](./Vowels_Cooling/images/F1311.png), [F1509](./Vowels_Cooling/images/F1509.png), [F1706](./Vowels_Cooling/images/F1706.png) |
 | 3B-E  | Effect of cooling on spatial release from masking | [.py](./Vowels_Unmasking/plot_unmasking_data.py/)  | [/dir](./Vowels_Unmasking/images)|
 | 4B-C  | Effects of cooling on sound localization          | [.py](./Localization/localization_analysis.py)     | [.png](./Localization/images/localization.png)|
 | S1    | Temperature distributions                         | [.py](./Supplementary/plot_cortical_temperature_dist.py)  | [.png](./Supplementary/images/Temperature_Distributions.png)|
