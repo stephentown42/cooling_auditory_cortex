@@ -25,4 +25,4 @@ Figures presented in the manu.py and supplementary information
 | S1    | Temperature distributions                         | [.py](./Supplementary/plot_cortical_temperature_dist.py)  | [.png](./Supplementary/images/Temperature_Distributions.png)|
 | S2    | Spatial release from masking in additional animals | [.py](./Localization/lateralization_supplementary.py)     | [.png](https://github.com/stephentown42/cooling_auditory_cortex/blob/main/Results/Vowels_Unmasking/images/F1201_control.png)|
 | S3    | Effect of cooling on sound lateralization         | [.py](./Localization/lateralization_supplementary.py)     | [.png](./Localization/images/lateralization.png)|
-| S4    | Performance vs trial         | [.py](./Localization/lateralization_supplementary.py)     | [F1311](./Supplementary/images/Performance_vs_trial_F1311.png) [F1509](./Supplementary/images/Performance_vs_trial_F1509.png)|
+| S4    | Performance vs trial         | [.py](./Localization/lateralization_supplementary.py)     | [F1311](./Supplementary/images/Performance_vs_trial_F1311.png), [F1509](./Supplementary/images/Performance_vs_trial_F1509.png)|
