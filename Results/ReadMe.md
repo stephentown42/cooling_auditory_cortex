@@ -1,7 +1,5 @@
 # Results
 
-The directory contains the modules used across the repository for standard processing ([cooling_analysis.py](cooling_analysis.py)) and plotting ([plot_tools.py](plot_tools.py)) of data.
-
 ## Results by Task:
 * [Vowel discrimination in noise](./Vowel_Behavior)
 * [Effects of cooling / optogenetics on vowel discrimination in noise](./Vowel_Cooling)
