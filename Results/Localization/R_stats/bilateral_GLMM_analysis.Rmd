@@ -1,0 +1,254 @@
+---
+title: 'Analysis of effects of bilateral cortical inactivation on sound localization using logistic
+  regression  '
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  html_notebook: default
+---
+
+Version History:
+
+* Created: 2021-09-11 Stephen Town
+
+* Ported to notebook: 2022-05-16
+
+Combine data across ferrets and run a generalized linear mixed model to determine the effect of cooling on probability of making a correct response, with subject and test  session as random effects, and cooling as fixed effects
+
+The individual observations are at the trial level, which is important for analysis of error magnitude, but means that the data for trial accuracy (correct/error) is in binary format.
+
+
+```{r}
+rm(list = ls())
+suppressPackageStartupMessages( library(dplyr))
+suppressPackageStartupMessages( library(tidyverse))
+suppressPackageStartupMessages( library(lme4))
+suppressPackageStartupMessages( library(DHARMa))
+```
+
+---
+
+## 1. Loading and preprocessing
+
+**Load data** from individual subjects and combine. 
+
+
+```{r}
+data_path = '/home/stephen/Github/Vowel_Discrimination_In_Noise/Results/Localization/data/analysis'
+
+magnum <- read_csv( file.path( data_path, 'F1311.csv'), show_col_types = FALSE)
+robin <- read_csv( file.path( data_path, 'F1509.csv'), show_col_types = FALSE)
+
+magnum$fNum <- 1311
+robin$fNum  <- 1509
+
+df <- rbind(magnum, robin) %>%
+  mutate(
+    fNum = as.factor(fNum),            # Treat F number as
+    HoldTime = HoldTime / 1000         # Convert ms to seconds
+    )
+
+df <- subset(df, select=-c(originalFile, SessionDate))       # Remove information about data origin (unless needed for debugging)
+df <- subset(df, select=-c(Trial, StartTime, ComputerTime))  # Remove information about trial order (unless needed for debugging)
+
+rm(magnum, robin)
+head(df)
+```
+
+Rescale speaker angle and response error from degrees to radians, and remove older ways of encoding sound and response location (in degrees or as index)
+
+```{r}
+df <- df %>% 
+  mutate(
+    SpeakerRad = SpkrPos / 180 * pi,
+    ErrorRad = Error / 180 *pi
+    ) %>%  
+  select(-SpkrIdx, -SpkrPos, -Response, -ResponseAngle, Error)
+
+head(df)
+```
+
+Aggregate counts across unique trials conditions... converting binary responses to count data can make it easier to perform checks and further predictions on. Note that the coefficients for the model should be the same as the model fitted to binary data above.
+```{r}
+counts = df %>%
+  group_by(fNum, Condition, Atten, SpeakerRad, spkr_hemifield, CenterReward) %>%           
+  summarise(
+    nCorrect = sum(Correct),
+    nTotal = n(),
+    .groups = 'keep'
+    ) %>%
+  mutate(
+    dist_to_midline = abs(SpeakerRad)
+  )
+
+bc_counts <- counts[counts$Condition %in% c("Bilateral","Control"),]
+
+```
+
+---
+
+## 3. Fitting models to test effect of Bilateral cooling on accuracy
+
+### 3.1. Model fitting
+
+Start by doing the logistic regression on performance on full localization. Here, we're interested in the effect of condition (bilateral cooling or control) on odds of making a correct response. For completeness, we'll include covariates (signal attenuation, speaker location, center reward) where possible, to try and account for as much variance in the data as possible. Note that there are other variables (Hold Time and sound duration) that we might ideally like to include as further covariates, but these are confounded with subject and so may be the cause of 'isSingular warnings'.
+
+It's also important to consider that non-linear relationships may exist between speaker angle and performance. To accommodate this, we will look at a couple of ways of including sound location as part of the model.
+
+Model 1: Ignore speaker completely
+
+```{r}
+BCC_1 = glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ 1 + Condition + Atten + CenterReward + (1|fNum), 
+  family=binomial, 
+  data=bc_counts)
+
+summary(BCC_1)
+```
+
+Model 2: Consider model as a random effect
+
+```{r}
+BCC_2 = glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ 1 + Condition + Atten + CenterReward + (1|fNum) + (1|SpeakerRad), 
+  family=binomial, 
+  data=bc_counts)
+
+summary(BCC_2)
+```
+
+Model 3: Consider the distance from the midline and hemifield of the speaker, without interaction with cooling
+```{r}
+BCC_3 = glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ 1 + Condition + dist_to_midline*spkr_hemifield + Atten + CenterReward + (1|fNum), 
+  family=binomial, 
+  data=bc_counts)
+
+summary(BCC_3)
+```
+
+Make the model slightly more complex by considering the distance to the midline and hemifield, with an interaction
+
+```{r}
+BCC_4 = glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ 1 + Condition*dist_to_midline + dist_to_midline*spkr_hemifield + Atten + CenterReward + (1|fNum), 
+  family=binomial, 
+  data=bc_counts)
+
+summary(BCC_4)
+```
+
+Finally, consider the three way interaction between speaker hemifield, distance to midline and cooling condition
+
+```{r}
+BCC_5 = glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ 1 + Condition*dist_to_midline*spkr_hemifield + Atten + CenterReward + (1|fNum), 
+  family=binomial, 
+  data=bc_counts)
+
+summary(BCC_5)
+```
+
+
+
+Model comparison
+
+```{r}
+anova(BCC_3, BCC_4, BCC_5)
+```
+
+
+
+### 3.2. Model checking
+
+Checking logistic regression models is difficult because many of the conventional indicators of poor model quality used in linear regression (heteroscedacity, Gaussian distribution of residuals) don't apply. Here, we'll use the DHARMa package to calculate randomized quantile residuals using a simulation approach. This hypothesis is that the cumulative distribution of residuals should give average values close to 0.5 and within the bounds of 0.25 to 0.75. We can inspect how residuals differ between conditions to get an idea of where problems might be occuring ()
+
+```{r}
+simulationOutput <- simulateResiduals(fittedModel = BCC_2, n=500, plot = T)
+```
+
+
+
+---
+
+### 3.3. Model Prediction
+
+Ok, let's try instead using **model prediction** to see if the process generated by the model matches what we see in the data. We start by adding a column to the input table that consists of the probability of making a correct response according to the model, from which we then estimate the number of correct trials for each type of experimental condition.
+
+```{r}
+# Predict probability of making correct response
+bc_counts$fit <- predict(BCC_2, bc_counts, type="response")
+
+# Predict the number of correct trials, using original trial counts 
+bc_counts <- bc_counts %>%
+  mutate(
+    predicted_correct = fit * nTotal)
+
+# Summarize data center reward and attenuation
+bc_agg = bc_counts %>% 
+  group_by(fNum, Condition, SpeakerRad) %>%          
+  summarise(
+    nCorrect = sum(nCorrect),
+    nTotal = sum(nTotal),
+    predicted_correct = sum(predicted_correct),
+    .groups = 'keep'
+    ) %>%
+  mutate(
+    pCorrect = nCorrect / nTotal * 100,
+    fit_p = predicted_correct / nTotal * 100
+  )
+```
+
+
+We could also make a prediction about the behavior across sound locations as was shown in the initial visualization. Let's therefore Aggregate across variables that aren't of interest and plot the observed behavior vs. the predicted behavior.
+
+```{r}
+
+ggplot(                                 # Plot facet grid for predicted and observed performance
+  bc_agg %>%
+    mutate(Spkr_deg = SpeakerRad / pi * 180),
+  aes(x = Spkr_deg, color=Condition)
+  ) + 
+geom_line(
+  aes(y = fit_p)
+  ) + 
+geom_point(
+  shape = 19,
+  aes(
+    y = pCorrect,
+    size = nTotal,
+    alpha = 0.25
+    )
+  ) + 
+scale_size(range = c(0, 4), trans="log10") +
+scale_color_manual(
+  labels = c("Cooled", "Control"),
+  values = c("#37a9a4", "#3d3d3d")
+) + 
+theme(
+  axis.text = element_text(size = 7.5),
+  axis.title = element_text(size = 8),
+  strip.text = element_text(size = 8),
+  legend.title = element_text(size=8),
+  legend.text = element_text(size=7.5)
+  #strip.background = element_rect(colour="black", fill="white")
+  ) +
+scale_x_continuous(name="Speaker Angle (°)", limits=c(-100, 100), breaks=seq(-90,90,30)) + 
+scale_y_continuous(name="% Correct", limits=c(0, 100)) +
+facet_wrap(. ~fNum)
+
+ggsave(filename = "Localization_predictions_BCC2b.png", width = 12, height = 6, units = "cm", dpi=300)
+
+```
+
+
+
+
+
+
+
+
+
+
+
