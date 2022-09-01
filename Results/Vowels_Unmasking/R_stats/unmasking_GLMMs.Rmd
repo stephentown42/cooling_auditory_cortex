@@ -1,0 +1,393 @@
+---
+title: Effects of spatial separation on vowel discrimination in noise, and it's dependence
+  on Auditory Cortex
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+Version History:
+
+* Created: 2021-09-09 Stephen Town
+
+* Ported to notebook: 2022-05-19
+
+
+```{r}
+rm(list = ls())
+suppressPackageStartupMessages( library(dplyr))
+suppressPackageStartupMessages( library(tidyverse))
+suppressPackageStartupMessages( library(lme4))
+suppressPackageStartupMessages( library(DHARMa))
+suppressPackageStartupMessages( library(scales))
+suppressPackageStartupMessages( library(sjPlot))
+```
+
+
+## 1. Load Data
+
+From animals with functional cooling loops (F1311 and F1509) and animals tested with behavior only (F1201, F1203, F1216, F1217). 
+
+
+```{r}
+data_path = '/home/stephen/Github/Vowel_Discrimination_In_Noise/Results/Vowels_Unmasking/data/analysis'
+
+floz = read_csv( file.path( data_path, 'F1201.csv'), show_col_types = FALSE)
+virg = read_csv( file.path( data_path, 'F1203.csv'), show_col_types = FALSE)
+mini = read_csv( file.path( data_path, 'F1216.csv'), show_col_types = FALSE)
+clio = read_csv( file.path( data_path, 'F1217.csv'), show_col_types = FALSE)
+magnum = read_csv( file.path( data_path, 'F1311.csv'), show_col_types = FALSE)
+robin  = read_csv( file.path( data_path, 'F1509.csv'), show_col_types = FALSE)
+
+cols = c('fNum','treatment',"VowelLocation","SpatialCondition","Atten","F1","Correct")
+df = rbind(magnum[cols], robin[cols], floz[cols], virg[cols], mini[cols], clio[cols])
+
+rm(list = c("clio", "floz", "virg", "mini", "robin", "magnum"))
+head(df)
+```
+```{r}
+table(df$fNum)
+
+nrow(df)
+```
+
+
+## 2. Transform data
+
+Format subject number as factor and convert binary data to counts.
+
+```{r}
+df$fNum <- as.factor(df$fNum)
+df$F1 <- as.factor(df$F1)    # First formant = vowel identity
+
+df$vowel_level_orig = 57 - df$Atten
+df$vowel_level <- rescale(df$vowel_level_orig)
+
+counts = df %>% 
+  group_by(fNum, treatment, VowelLocation, SpatialCondition, F1, vowel_level) %>%
+  summarise(
+    nCorrect = sum(Correct),
+    nTotal = n(),
+    .groups = 'keep'
+    ) %>%
+  mutate( pCorrect = nCorrect / nTotal * 100)
+
+head(counts)
+```
+## 7. All In One Model
+
+What if we just included everything in the dataset, rather than doing four separate modelling analyses?
+
+```{r}
+ACS_counts = subset(counts, SpatialCondition %in% c("colocated", "separated"))
+
+clean_counts = subset(counts, SpatialCondition %in% c("single_speaker"))
+clean_counts = rename(clean_counts, clean_pCorrect=pCorrect)
+clean_counts = clean_counts %>%
+    select(fNum, SpatialCondition, treatment, vowel_level, VowelLocation, F1, clean_pCorrect)
+
+ACS_extended <- merge(
+  x = ACS_counts, 
+  y = clean_counts, 
+  by = c("fNum", "treatment", "VowelLocation", "F1", "vowel_level"), 
+  all.x = TRUE, 
+  all.y = FALSE)
+
+
+ACS_extended = ACS_extended %>%
+    mutate(clean_pCorrect = clean_pCorrect / 100)
+
+head(ACS_extended, 3)
+```
+Split data for later testing
+
+```{r}
+
+control_behav = ACS_extended %>%
+  filter(treatment == FALSE)
+
+
+cooled_animals = ACS_extended %>%
+  filter(fNum == 1311 | fNum == 1509)
+
+nrow(cooled_animals)
+
+```
+
+
+
+
+### 7.1. Model Fitting
+
+Start with just the main effects
+
+```{r}
+ACS_mdl_1 <- glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ SpatialCondition.x + treatment + vowel_level + VowelLocation + (1|fNum) + (0+clean_pCorrect|fNum), 
+  data = ACS_extended,
+  family = binomial)
+
+summary(ACS_mdl_1)
+```
+Next, add an interaction between spatial condition and treatment
+
+```{r}
+ACS_mdl_2 <- glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ SpatialCondition.x*treatment + vowel_level + VowelLocation + (1|fNum) + (0+clean_pCorrect|fNum), 
+  data = ACS_extended,
+  family = binomial)
+
+summary(ACS_mdl_2)
+```
+
+Add in the interaction between treatment and Attenuation that might capture greater effects of cooling for quieter sounds
+```{r}
+ACS_mdl_3 <- glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ SpatialCondition.x*treatment + treatment*vowel_level + VowelLocation + (1|fNum) + (0+clean_pCorrect|fNum), 
+  data = ACS_extended,
+  family = binomial)
+
+summary(ACS_mdl_3)
+```
+
+Finally, consider a three-way interaction between cooling, spatial separation and sound level
+
+```{r}
+ACS_mdl_4 <- glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ SpatialCondition.x*treatment*vowel_level + VowelLocation + (1|fNum) + (0+clean_pCorrect|fNum), 
+  data = ACS_extended,
+  family = binomial)
+
+summary(ACS_mdl_4)
+```
+Repeat model 2, but without the random slope
+
+```{r}
+ACS_mdl_5 <- glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ SpatialCondition.x*treatment + vowel_level + VowelLocation + (1|fNum), 
+  data = ACS_extended,
+  family = binomial)
+
+summary(ACS_mdl_5)
+```
+What about clean performance as a covariate
+
+
+```{r}
+
+ACS_mdl_6 <- glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ SpatialCondition.x*treatment + vowel_level + VowelLocation + clean_pCorrect + (1|fNum),
+  data = ACS_extended,
+  family = binomial)
+
+summary(ACS_mdl_6)
+```
+
+```{r}
+ACS_mdl_7 <- glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ SpatialCondition.x*treatment + vowel_level + VowelLocation + (1|fNum) + (1|clean_pCorrect), 
+  data = ACS_extended,
+  family = binomial)
+
+summary(ACS_mdl_7)
+```
+```{r}
+ACS_mdl_8 <- glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ SpatialCondition.x*treatment + vowel_level + VowelLocation + (1|fNum), 
+  data = ACS_extended,
+  family = binomial)
+
+summary(ACS_mdl_8)
+```
+
+
+```{r}
+tab_model(ACS_mdl_8)
+```
+
+
+
+### 7.2. Model Selection
+
+AIC values
+
+
+```{r}
+anova(ACS_mdl_1, ACS_mdl_2, ACS_mdl_3, ACS_mdl_4)
+```
+Compare models with same fixed effects, but varying in random effect design
+
+```{r}
+anova(ACS_mdl_2, ACS_mdl_6, ACS_mdl_7, ACS_mdl_8)
+```
+
+
+
+
+### 7.3. Model Prediction
+
+```{r}
+ACS_extended$fit <- predict(ACS_mdl_8, ACS_extended, type="response")
+
+
+# Summarize performance for ferret, stimulus condition, treatment, and sound level
+ACS_agg_by_level <- ACS_extended %>%
+  mutate(
+    predicted_correct = fit * nTotal
+    ) %>%
+  group_by(
+    fNum, SpatialCondition.x, treatment, vowel_level,
+    ) %>%          
+  summarise(
+    nCorrect = sum(nCorrect),
+    nTotal = sum(nTotal),
+    predicted_correct = sum(predicted_correct),
+    .groups = 'keep'
+    ) %>%
+  mutate(
+    pCorrect = nCorrect / nTotal * 100,
+    fit_p = predicted_correct / nTotal * 100,
+    group = interaction(fNum, treatment)
+  )
+
+# Restore original vowel levels for plotting 
+ACS_agg_by_level$vowel_level <- rescale(
+  ACS_agg_by_level$vowel_level,
+  to = c(min(df$vowel_level_orig) , max(df$vowel_level_orig)))
+
+# Calculate SNR
+ACS_agg_by_level$SNR = ACS_agg_by_level$vowel_level - 67
+```
+
+Plot
+
+```{r}
+ggplot( 
+  ACS_agg_by_level, 
+  aes(x = SNR, color = SpatialCondition.x)
+  ) + 
+geom_line(
+  aes(y = fit_p)
+  ) + 
+geom_point(
+  shape = 19,
+  aes(
+    y = pCorrect,
+    size = nTotal,
+    alpha = 0.25
+    )
+  ) + 
+scale_size(range = c(0, 4))+
+scale_color_manual(values=c('#9e0067','#d37000')) + 
+labs(
+  x = "SNR (dB)", 
+  y = "% Correct",
+  size='Trials (n)') + 
+theme(
+  axis.text = element_text(size = 7.5),
+  axis.title = element_text(size = 8),
+  strip.text = element_text(size = 8),
+  legend.title = element_text(size=8),
+  legend.text = element_text(size=7.5)
+  #strip.background = element_rect(colour="black", fill="white")
+  ) +
+facet_wrap(
+  . ~ group, 
+  ncol = 2,
+  labeller = labeller(group = 
+    c("1201.FALSE" = "F1201",
+      "1203.FALSE" = "F1203",
+      "1216.FALSE" = "F1216",
+      "1217.FALSE" = "F1217",
+      "1311.FALSE" = "F1311 (Control)",
+      "1509.FALSE" = "F1509 (Control)",
+      "1311.TRUE" = "F1311 (Cooled)",
+      "1509.TRUE" = "F1509 (Cooled)")
+  )
+)
+ 
+ggsave(filename = "Unmasking_ACS8_predictions.png", width = 11.2, height = 11.5, units = "cm", dpi=300)
+
+```
+
+
+```{r}
+# Summarize performance for ferret, stimulus condition, treatment
+ACS_agg_over_level <- ACS_extended %>%
+  mutate(
+    predicted_correct = fit * nTotal
+    ) %>%
+  group_by(
+    fNum, SpatialCondition.x, treatment,
+    ) %>%          
+  summarise(
+    nCorrect = sum(nCorrect),
+    nTotal = sum(nTotal),
+    predicted_correct = sum(predicted_correct),
+    .groups = 'keep'
+    ) %>%
+  mutate(
+    pCorrect = nCorrect / nTotal * 100,
+    fit_p = predicted_correct / nTotal * 100
+  )
+```
+
+
+```{r}
+
+pt = pivot_longer(
+      ACS_agg_over_level,
+      -c(fNum, SpatialCondition.x, treatment, nTotal, nCorrect, predicted_correct),
+      names_to='metric', 
+      values_to = 'values')
+
+pt = pt %>% select(fNum, SpatialCondition.x, treatment, metric, values)
+
+pt = pivot_wider(pt, 
+    names_from = SpatialCondition.x,
+    values_from = values
+  )
+
+
+ggplot(pt, 
+    aes(x = colocated, y = separated, color=fNum)
+    ) +
+geom_point() + 
+facet_grid(metric ~ treatment)
+```
+
+
+
+
+### 7.4. Model Checking
+
+```{r}
+simulationOutput <- simulateResiduals(fittedModel = ACS_mdl_7, n=500, plot = T)
+```
+
+Look at the correlation between intercept and slope for random effects
+
+
+# 8. Running models on subsets of the data to confirm main findings
+
+## 8.1. Control data without cooling - do we still see an effect of spatial unmasking
+
+```{r}
+control_model <- glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ SpatialCondition.x + vowel_level + VowelLocation + (1|fNum), 
+  data = control_behav,
+  family = binomial)
+
+summary(control_model)
+```
+
+## 8.2. Effect of cooling with just animals tested with cooling
+
+```{r}
+cool_model <- glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ SpatialCondition.x*treatment + vowel_level + VowelLocation + (1|fNum), 
+  data = cooled_animals,
+  family = binomial)
+
+summary(cool_model)
+```
