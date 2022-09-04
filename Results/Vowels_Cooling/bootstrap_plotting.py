@@ -1,11 +1,7 @@
 """
-Vowel In Noise Cooling - Analysis By Ferret
-
-Plots the performance of ferrets (F1311, F1519 and F1706) discriminating vowels as a function of SNR, and across SNR during control and test conditions (cortical inactivation via cooling or light delivery / optogenetics) in clean conditions and with noise. 
+Plots the bootstrapped performance of ferrets (F1311, F1519 and F1706) discriminating vowels as a function of SNR, and across SNR during control and test conditions (cortical inactivation via cooling or light delivery / optogenetics) in clean conditions and with noise. 
 
 Performance across SNR is shown as a scatter cloud 
-
-
 
 Input 
 -----
@@ -26,6 +22,7 @@ Version History
 from dataclasses import dataclass
 import os, sys
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from numpy.random import PCG64
@@ -34,9 +31,16 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.abspath( os.path.join(os.path.dirname(__file__), '../..')))
 
+from lib.bootstrap import ferret
 from lib.colors import VOWELS_IN_NOISE as colors
-from lib.metric_axes import metric_axes
+from lib.colors import f_markers
 from lib.settings import noise_level
+from lib.plot_utils import panel, metric_axes
+
+f_colors = {'F1311':'#00cc44', 'F1509':'#ff00ff', 'F1706':'#0e6b96'}
+f_markers = {'F1311':'s', 'F1509':'d', 'F1706':'o'}
+
+matplotlib.rcParams['font.family'] = 'Arial'
 
 my_rng = PCG64(14617437968570037101461646485490264188456279360134175)
 
@@ -191,31 +195,146 @@ def plot_bootstrap_scatter(ax, x: int, y: pd.Series, c: str) -> None:
         ax.scatter(x, y, c=c, s=1/2, marker='o', alpha=0.1, edgecolors='none', zorder=2) 
 
 
+
+class plot_effect_of_cooling(panel):
+    """ Summary plot showing the change in performance with cooling across bootstrap resamples """
+    
+ 
+    def plot_ferret(self, subject:ferret, col_idx:int, stimtype:str, fontsize:float=8) -> None:
+        """ Create a single axis on which to plot all ferrets using bar and scatter """
+            
+        # Make a copy so we don't mess up underlying data for other purposes
+        df = subject.bootstrap_over_SNR.copy()
+
+        # Select treatment condition
+        df = df[df['Mask'] == stimtype]
+        
+        # Select axes to plot in
+        ax = self.axs[col_idx]
+
+        # Make performance in each stimulus condition a separate column    
+        df = df.pivot_table(index=['iteration','Mask'], columns=['treatment'], values='pCorrect')
+
+        # Plot          
+        ax.scatter(
+            x = df[False].to_numpy(),
+            y = df[True].to_numpy(),
+            alpha = 0.25,
+            edgecolors = 'none',
+            c = f_colors[f"F{subject.num}"],
+            s = 1,
+            zorder = 0
+        )
+
+        ax.scatter(
+            x = df[False].mean(),
+            y = df[True].mean(),                
+            edgecolors = 'k',
+            c = f_colors[f"F{subject.num}"],
+            linewidths = 0.5,
+            label = f"F{subject.num}",
+            marker = f_markers[f"F{subject.num}"],
+            s = 5,
+            zorder = 1
+        )
+    
+        ax.plot((0, 100), (0, 100), lw=0.5, c='k', zorder=-1)
+        
+        ax.set_xlim((47.5, 92.5))
+        ax.set_ylim((47.5, 92.5))
+        
+        ax.set_xticks(np.arange(50, 100, 10))
+        ax.set_yticks(np.arange(50, 100, 10))
+
+
+        ax.set_xlabel('Control (% Correct)', fontsize=fontsize)
+        ax.set_ylabel('Inactivation (% Correct)', fontsize=fontsize)
+
+        ax.tick_params(labelsize=8, length=2)            
+        ax.set_aspect(1)
+        # ax.legend(framealpha=1, fontsize=8, prop=matplotlib.font_manager.FontProperties(family='Arial'))
+
+        stimtype = stimtype.replace('Restricted','Noise')
+
+        ax.set_title(stimtype, fontsize=8.5, fontweight='bold')
+
+
+    def add_modal_predictions(self):
+        """ Plot model predictions on top of bootstrap measurements """
+        
+        # Load predictions made in R (see unmasking_GLMMs.Rmd for details)
+        pt = pd.read_csv('Results/Vowels_Unmasking/R_stats/GLM_prediction_over_attns.csv')
+
+        for (treatment, ferret), tdata in pt.groupby(['treatment','fNum']):
+
+            if treatment:
+                ax = self.axs[1, 0]
+            else:
+                ax = self.axs[0, 0]
+
+            ax.scatter(
+                x = tdata[tdata['metric'] == "pCorrect"]['colocated'].values,
+                y = tdata[tdata['metric'] == "pCorrect"]['separated'].values,
+                marker = 'o',                
+                c = f_colors[f"F{ferret}"],
+                facecolor = 'none',
+                s = 16
+            )
+
+
+    def format_axis_labels(self, fontsize=7.5):
+        """ Set select labels on specific axes """
+        
+        self.axs[0,0].set_ylabel('Separated (% Correct)', fontsize=fontsize)
+        self.axs[1,0].set_ylabel('Separated (% Correct)', fontsize=fontsize)
+        self.axs[0,1].set_ylabel('Clean (% Correct)', fontsize=fontsize)
+        self.axs[1,1].set_ylabel('Clean (% Correct)', fontsize=fontsize)
+        
+        self.axs[1,0].set_xlabel('Co-located (% Correct)', fontsize=fontsize)
+        self.axs[1,1].set_xlabel('Co-located (% Correct)', fontsize=fontsize)
+
+
+
+
 def main():
     
     # Define ferrets
-    ferrets = [ferret_to_plot(1311, 'Magnum'), ferret_to_plot(1509, 'Robin'), ferret_to_plot(1706, 'Mimi')]
+    ferrets = [ferret_to_plot(1509, 'Robin'), ferret_to_plot(1311, 'Magnum'), ferret_to_plot(1706, 'Mimi')]
 
     # Load bootstrap results
-    [x.load_bootstrap_results('Results/Vowels_Cooling/data/bootstrap') for x in ferrets]
+    [x.load_bootstrap_results('Results/Vowels_in_Noise/data/bootstrap') for x in ferrets]
 
     # Get effect of cooling for each bootstrap iteration
     [x.get_effect_of_cooling() for x in ferrets]
     
     [x.report_zscore() for x in ferrets]
 
+    # Compare clean and noise performance on xy plot
+    cvxy = plot_effect_of_cooling(fig_size=(3.6, 3.6), nrows=1, ncols=2, sharey=True)
+
+    [cvxy.plot_ferret(f, 1, 'Clean') for f in ferrets[0:2]]
+    [cvxy.plot_ferret(f, 0, 'Restricted') for f in ferrets]
+
+    # cvxy.add_modal_predictions()
+    # cvxy.format_axis_labels(fontsize=8)
+
+    plt.tight_layout()
+    # plt.show()
+    cvxy.save_figure('Results/Vowels_in_Noise/images', 'effect_of_cooling.png')
+
+
     # Plot data as separate figure for each ferret
-    for f in ferrets:
+    # for f in ferrets:
 
-        f.create_figure()
+    #     f.create_figure()
 
-        f.plot_over_SNR(mask='Restricted', colors=colors['Restricted'])
-        f.plot_over_SNR(mask='Clean', colors=colors['Clean'])
+    #     f.plot_over_SNR(mask='Restricted', colors=colors['Restricted'])
+    #     f.plot_over_SNR(mask='Clean', colors=colors['Clean'])
 
-        f.plot_by_SNR(mask='Restricted', xvar='SNR', xlabel='SNR (dB)', xlims= (-29, 9), colors=colors['Restricted'])
-        f.plot_by_SNR(mask='Clean', xvar='vowel_level', xlabel='Level (dB SPL)', xlims= (41, 79), colors=colors['Clean'])
+    #     f.plot_by_SNR(mask='Restricted', xvar='SNR', xlabel='SNR (dB)', xlims= (-29, 9), colors=colors['Restricted'])
+    #     f.plot_by_SNR(mask='Clean', xvar='vowel_level', xlabel='Level (dB SPL)', xlims= (41, 79), colors=colors['Clean'])
 
-        f.save_figure('Results/Vowels_Cooling/images/')       
+    #     f.save_figure('Results/Vowels_Cooling/images/')       
 
     
 if __name__ == '__main__':

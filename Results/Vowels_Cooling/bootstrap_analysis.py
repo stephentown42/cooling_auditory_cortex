@@ -1,7 +1,5 @@
 """
-Vowel In Noise Cooling - Analysis By Ferret
-
-Flattens data across vowel identity
+Perform bootstrap resampling of performance of each ferret during vowel discrimination in noise
 
 Input
 -----
@@ -57,15 +55,15 @@ def main():
     
     for f in ferrets:
         
-        f.load_data('Results/Vowels_Cooling/data/analysis')
+        f.load_data('Results/Vowels_in_Noise/data/analysis')
 
         # Run bootstrap by SNR
         f.bootstrap(plot_vars=['Mask','treatment','SNR'], flat_vars=['vowel'], nBoots=1000)   # Flattening doesn't check ranges
-        f.write_results('Results/Vowels_Cooling/data/bootstrap', 'BY_SNR')
+        f.write_results('Results/Vowels_in_Noise/data/bootstrap', 'BY_SNR')
         
         # Run bootstrap across SNR
         f.bootstrap(plot_vars=['Mask','treatment'], flat_vars=['SNR','vowel'], nBoots=1000)
-        f.write_results('Results/Vowels_Cooling/data/bootstrap', 'OVER_SNR')
+        f.write_results('Results/Vowels_in_Noise/data/bootstrap', 'OVER_SNR')
         
      
 if __name__ == '__main__':

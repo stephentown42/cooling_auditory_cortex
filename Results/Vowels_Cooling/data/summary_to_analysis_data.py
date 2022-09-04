@@ -180,7 +180,7 @@ def main():
     
     for f in ferrets:          
 
-        f.load_data('Results/Vowels_Cooling/data/summary')
+        f.load_data('Results/Vowels_in_Noise/data/summary')
        
         f.remove_correction_trials()
         f.remove_trials_without_response()
@@ -198,13 +198,13 @@ def main():
 
         f.match_attenuations()
         
-        robin_control_performance_management(f)
+        f.data = f.data[f.data['vowel_level'] >= settings.min_level]
         
         f.data = ca.drop_rare_attenuations(f.data, min_trials=settings.min_trials)
             
         f.tidy_up_column_names()
         f.check_SNRs_are_balanced()
-        f.write_data('Results/Vowels_Cooling/data/analysis')
+        f.write_data('Results/Vowels_in_Noise/data/analysis')
 
 
 

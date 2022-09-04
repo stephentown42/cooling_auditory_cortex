@@ -1,0 +1,247 @@
+---
+title: 'Analysis of effects of cortical inactivation on vowel discrimination in noise
+  using logistic regression  '
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+  html_notebook: default
+---
+
+Version History:
+
+* Created: 2021-09-09 Stephen Town
+
+* Ported to notebook: 2022-05-19
+
+Combine data across ferrets and run a generalized linear mixed model to determine the effect of cooling on log-odds of correct response, with subject and test  session as random effects, and cooling as fixed effects
+
+The individual observations are at the trial level, which is important for analysis of error magnitude, but means that the data for trial accuracy (correct/error) is in binary format.
+
+
+```{r}
+rm(list = ls())
+
+suppressPackageStartupMessages( library(dplyr))
+suppressPackageStartupMessages( library(tidyverse))
+
+suppressPackageStartupMessages( library(lme4))
+suppressPackageStartupMessages( library(DHARMa))
+suppressPackageStartupMessages( library(scales))
+suppressPackageStartupMessages( library(sjPlot))
+```
+
+## 1. Load data
+
+Load data from ferrets with working cooling loops / optic fibers and select specific columns. 
+
+```{r}
+data_path = '/home/stephen/Github/Vowel_Discrimination_In_Noise/Results/Vowels_in_Noise/data/analysis'
+
+magnum = read_csv( file.path( data_path, 'F1311.csv'), show_col_types = FALSE)
+robin  = read_csv( file.path( data_path, 'F1509.csv'), show_col_types = FALSE)
+mimi   = read_csv( file.path( data_path, 'F1706.csv'), show_col_types = FALSE)
+
+cols = c('fNum','treatment',"vowel","Mask","Correct","vowel_level","SNR","CenterReward")
+df = rbind(magnum[cols], robin[cols], mimi[cols])
+
+df$fNum <- as.factor(df$fNum)
+head(df)
+```
+
+```{r}
+table(df$fNum)
+
+nrow(df)
+```
+
+
+## 2. Transform
+
+Although not strictly necessary for models without regularization, it is helpful for the interpretation of coefficients if we scale the sound level of vowels between 0 and 1. We then count the number of correct trials in each unique condition, and the total number of trials; again this isn't strictly needed, but count data can be more convenient to work with when inspecting model outputs.
+
+```{r}
+df$vowel_level_orig <- df$vowel_level    # Save a copy for reconstruction
+df$vowel_level <- rescale(df$vowel_level)
+
+counts = df %>% 
+  group_by(fNum, treatment, Mask, vowel, vowel_level, CenterReward) %>%
+  summarise(
+    nCorrect = sum(Correct),
+    nTotal = n(),
+    .groups = 'keep'
+    ) %>%
+  mutate(pCorrect = nCorrect / nTotal * 100)
+
+head(counts)
+```
+
+
+
+## 3. Fit Model
+
+Fit a logistic regression model with treatment (on/off), mask (clean or with noise) and vowel sound level as factors
+
+```{r}
+mdl_1 = glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ 1 + treatment*Mask + vowel_level + CenterReward + (1|fNum), 
+  family=binomial, 
+  data=counts)
+
+summary(mdl_1)
+```
+
+### 3.2. Two two-way interactions
+
+Add interaction between mask and vowel level (predicted)
+
+```{r}
+mdl_2 = glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ 1 + treatment*Mask + Mask*vowel_level + CenterReward + (1|fNum), 
+  family=binomial, 
+  data=counts)
+
+summary(mdl_2)
+```
+
+### 3.3. Model 3: Three-way Interaction 
+
+Add full combination of interactions between mask, treatment and level (not sure why this would be interesting *a priori*). Note that the AIC resulting from this model is higher than model 
+
+```{r}
+mdl_3 = glmer(
+  cbind(nCorrect, nTotal - nCorrect) ~ 1 + treatment*Mask*vowel_level + CenterReward + (1|fNum), 
+  family=binomial, 
+  data=counts)
+
+summary(mdl_3)
+```
+
+## 4. Model Selection
+
+From the three variants we looked at, the AIC criteria would favor model 2 (two two-way interactions), and this seems reasonable, given we would expect both the interaction between mask and sound level, and mask and treatment to be important.
+
+
+```{r}
+anova(mdl_1, mdl_2, mdl_3)
+```
+
+```{r}
+#tab_model(mdl_2)
+```
+
+
+
+---
+
+
+## 5. Check model
+
+### 5.1. Predictions
+
+Use the model to predict the correct response probability. Then convert to correct trial numbers for each unique condition and aggregate over covariates (center reward, vowel level) for plotting.
+
+```{r}
+counts$fit <- predict(mdl_2, counts, type="response")
+
+# Count trials for ferret, treatment, mask and sound level
+agg_by_level <- counts %>%
+  mutate(
+    predicted_correct = fit * nTotal
+    ) %>%
+  group_by(
+    fNum, treatment, Mask, vowel_level
+    ) %>%          
+  summarise(
+    nCorrect = sum(nCorrect),
+    nTotal = sum(nTotal),
+    predicted_correct = sum(predicted_correct),
+    .groups = 'keep'
+    ) %>%
+  mutate(
+    pCorrect = nCorrect / nTotal * 100,
+    fit_p = predicted_correct / nTotal * 100
+  )
+
+# Restore original vowel levels for plotting 
+agg_by_level$vowel_level <- rescale(
+  agg_by_level$vowel_level,
+  to = c(min(df$vowel_level_orig) , max(df$vowel_level_orig)))
+
+# Calculate SNR
+agg_by_level$SNR = agg_by_level$vowel_level - 70
+```
+
+Plot with vowel level
+
+
+```{r}
+# Change name of clean trials to alter order of the rows in ggplot facets
+agg_by_level$Mask[agg_by_level$Mask == 'xClean'] <- 'Clean'
+```
+
+
+
+```{r}
+ggplot( 
+  agg_by_level, 
+  aes(
+    x = vowel_level,
+    color = treatment
+    )
+  ) + 
+geom_line(
+  aes(y = fit_p)
+  ) +
+geom_point(
+  shape = 19,
+  aes(
+    y = pCorrect,
+    size = nTotal,
+    alpha = 0.25
+    )
+  ) + 
+scale_size(range = c(0, 4)) +
+labs(
+  x = "Vowel Level (dB SPL)", 
+  y = "% Correct",
+  size='Trials (n)'
+  ) + 
+scale_color_manual(
+  labels = c("Control", "Inactivation"),
+  values = c("#3d3d3d", "#37a9a4")
+  ) + 
+  scale_x_continuous(breaks=seq(50,70,by=10)) +
+  scale_y_continuous(breaks=seq(50,100,by=25)) +
+theme(
+  axis.text = element_text(size = 7.5),
+  axis.title = element_text(size = 8),
+  strip.text = element_text(size = 8),
+  legend.title = element_text(size=8),
+  legend.text = element_text(size=7.5)
+  #strip.background = element_rect(colour="black", fill="white")
+  ) +
+facet_grid(
+  Mask ~ fNum,
+  labeller = labeller(
+    Mask = c("Restricted" = "Noise", "Clean" = "Clean"),
+    fNum = c("1311" = "F1311", "1509" = "F1509", "1706" = "F1706")
+    )
+  )
+
+
+ggsave(filename = "Noise_cooling_predictions.png", width = 12, height = 6.5, units = "cm", dpi=300)
+```
+
+
+
+
+### 5.2. Model Checking
+
+```{r}
+simulationOutput <- simulateResiduals(fittedModel = mdl_2, n=500, plot = T)
+```
+
+
+

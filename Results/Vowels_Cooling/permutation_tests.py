@@ -1,5 +1,6 @@
 """
-Permutation tests 
+Permutation tests on individual ferret data to determine the effect of cooling
+on performance discriminating vowels for each noise condition (clean / noise)
 
 Version History
 ----------------
