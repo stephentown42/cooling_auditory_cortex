@@ -4,6 +4,7 @@ Stephen M. Town, Katherine C. Wood, Katarina C. Poole and Jennifer K. Bizley
 
 Ear Institute, University College London, London, UK.
 
+## Get started
 
-## Abstract
-A key question in auditory neuroscience is to what extent are brain regions functionally specialized for processing specific sound features such as sound location and identity. In auditory cortex, correlations between neural activity and sounds support both the specialization of distinct cortical subfields, and encoding of multiple sound features within individual cortical areas. However, few studies have tested the causal contribution of auditory cortex to hearing in multiple contexts. Here we determined the role of ferret primary auditory cortex in both spatial and non-spatial hearing by reversibly inactivating the middle ectosylvian gyrus during behavior using cooling (n=2) or optogenetics (n=1). In optogenetic experiments, we utilized the mDLx promoter to express Channelrhodopsin 2 in GABAergic interneurons and confirmed both viral expression (n=2) and light-driven suppression of spiking activity in auditory cortex, recorded using Neuropixels under anesthesia (n=465 units from 2 ferrets). Cortical inactivation impaired vowel discrimination in co-located noise, but not in clean conditions, or when the temporally coincident vowel and noise were spatially separated by 180°. Testing the ferrets implanted with cooling loops in a sound localization task confirmed that deficits in spatial hearing arose from inactivation of the same region of auditory cortex that was implicated in vowel discrimination in noise. Our results are consistent with single unit recordings in primary auditory cortex showing mixed selectivity for spatial and non-spatial features of sound and suggest a contribution of this region to multiple forms of hearing necessary for auditory scene analysis.
+### 1. Read the paper
+Available on BioRxiv (also accepted at the Journal of Neuroscience - coming soon).
