@@ -12,7 +12,7 @@ Available on [BioRxiv](https://www.biorxiv.org/content/10.1101/2021.11.16.468798
 ### 2. Explore the notebooks
 Most of the major analyses of the effects of auditory cortical inactivation are outlied in specific notebooks (links to pdfs for browser, but Rmarkdown files are available in the same directories and best viewed in Rstudio):
 * [Vowel discrimination in clean vs. noisy conditions](https://github.com/stephentown42/cooling_auditory_cortex/blob/main/Results/Vowels_Cooling/R_stats/vin_cooling.pdf)
-* Spatial separation of vowel and noise
+* [Spatial separation of vowel and noise](https://github.com/stephentown42/cooling_auditory_cortex/blob/main/Results/Vowels_Unmasking/R_stats/unmasking_GLMMs.pdf)
 * Sound localization
   - [Bilateral inactivation](https://github.com/stephentown42/cooling_auditory_cortex/blob/main/Results/Localization/R_stats/bilateral_GLMM_analysis.pdf)
   - [Unilateral inactivation](https://github.com/stephentown42/cooling_auditory_cortex/blob/main/Results/Localization/R_stats/unilateral_GLMM_analysis.pdf)
