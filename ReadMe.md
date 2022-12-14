@@ -1,6 +1,6 @@
-# Vowel Discrimination In Noise
+# Reversible inactivation of ferret auditory cortex impairs spatial and non-spatial hearing
 
-Stephen M. Town, Katherine C. Wood, Katarina C. Poole and Jennifer K. Bizley
+Stephen M. Town, Katarina C. Poole, Katherine C. Wood and Jennifer K. Bizley
 
 Ear Institute, University College London, London, UK.
 
