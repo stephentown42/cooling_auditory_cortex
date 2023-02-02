@@ -8,7 +8,7 @@ Ear Institute, University College London, London, UK.
 
 ### 1. Read the paper
 
-The full report is included with this repository as a [pdf](./ePMC_manuscript.pdf), or you can find behind at the [Journal of Neuroscience](https://www.jneurosci.org/content/43/5/749)(paywalled).
+The full report is included with this repository as a [pdf](./ePMC_manuscript.pdf), or you can find behind at the [Journal of Neuroscience](https://www.jneurosci.org/content/43/5/749) (paywalled).
 
 ### 2. Explore the notebooks
 Most of the major analyses of the effects of auditory cortical inactivation are outlied in specific notebooks (links to pdfs for browser, but Rmarkdown files are available in the same directories and best viewed in Rstudio):
