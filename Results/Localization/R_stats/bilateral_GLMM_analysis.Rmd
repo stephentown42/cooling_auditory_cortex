@@ -107,7 +107,7 @@ BCC_1 = glmer(
 summary(BCC_1)
 ```
 
-Model 2: Consider model as a random effect
+Model 2: Consider speaker location (labelled as SpeakerRad) as a random effect
 
 ```{r}
 BCC_2 = glmer(
