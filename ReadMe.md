@@ -19,7 +19,7 @@ Most of the major analyses of the effects of auditory cortical inactivation are 
   - [Unilateral inactivation](https://github.com/stephentown42/cooling_auditory_cortex/blob/main/Results/Localization/R_stats/unilateral_GLMM_analysis.pdf)
 
 ### 3. See the code
-Look in the [Results](./Results) directory for code for deducing outcomes and visualizing data in each part of the study. 
+Look in the [Results](./Results) directory for code for deducing outcomes and visualizing data in each part of the study. For more info on how to generate the sounds used in the study, see the readMe on [Stimuli](./Methods/Stimuli). For code related to behavioral testing, check out the repository for our data acquisition software [GoFerret](https://github.com/stephentown42/GoFerret).
 
 ### 4. Use the data yourself
 Summary data files are included as part of the repository. Clone and use the results to go further!
